@@ -23,7 +23,6 @@ require('angular-mocks/ngMock');
 
 require('../../../main/resources/static/js/HoldmailApp');
 require('../../../main/resources/static/js/MessageService');
-require('../../../main/resources/static/js/ModalController');
 
 describe('ModalController Tests', function () {
 

@@ -25,13 +25,26 @@ require('ng-infinite-scroll');
 (function () {
     'use strict';
 
-    var HoldMailApp = angular.module('HoldMailApp', ['ui.bootstrap', 'angular-growl', 'infinite-scroll']);
+    var HoldMailApp = angular.module('HoldMailApp', ['ui.bootstrap', 'angular-growl', 'infinite-scroll', 'ngRoute']);
 
-    HoldMailApp.config([
+    HoldMailApp.config(function (growlProvider) {
+        growlProvider.globalTimeToLive({success: 3000, error: -1, warning: 3000, info: 3000});
+    });
 
-        'growlProvider', function (growlProvider) {
-            growlProvider.globalTimeToLive({success: 3000, error: -1, warning: 3000, info: 3000});
-        }]);
+    HoldMailApp.config(function ($routeProvider) {
 
+        $routeProvider
+            .when('/', {
+                templateUrl: 'templates/mail-list.html',
+                controller: 'MessageListController'
+            })
+            .when('/view/:messageId', {
+                templateUrl: 'templates/mail-view.html',
+                controller: 'MessageViewController'
+            })
+            .otherwise({
+                redirectTo: '/'
+            })
+    });
 
 }());

@@ -21,30 +21,30 @@
 
     angular.module('HoldMailApp')
 
-        .controller('MessageListController', ['$scope', '$uibModal', 'MessageService',
-            function ($scope, $uibModal, MessageService) {
+        .controller('MessageListController', ['$scope', '$location', 'MessageService',
+            function ($scope, $location, MessageService) {
 
-                var mainCtrl = this;
+                var that = this;
 
-                mainCtrl.items = [];
-                mainCtrl.busy = false;
-                mainCtrl.noMorePages = false;
-                mainCtrl.page = 0;
-                mainCtrl.size = 40;
+                that.items = [];
+                that.busy = false;
+                that.noMorePages = false;
+                that.page = 0;
+                that.size = 40;
 
-                mainCtrl.clearAndFetchMessages = function () {
-                    mainCtrl.items = [];
-                    mainCtrl.page = 0;
-                    mainCtrl.noMorePages = false;
-                    mainCtrl.fetchMessages();
+                that.clearAndFetchMessages = function () {
+                    that.items = [];
+                    that.page = 0;
+                    that.noMorePages = false;
+                    that.fetchMessages();
                 };
 
-                mainCtrl.showEmptyMessagesPane = function() {
+                that.showEmptyMessagesPane = function() {
 
-                    return !this.busy && mainCtrl.items.length < 1;
+                    return !this.busy && that.items.length < 1;
                 };
 
-                mainCtrl.fetchMessages = function () {
+                that.fetchMessages = function () {
 
                     if (this.busy || this.noMorePages) {
                         return;
@@ -53,49 +53,32 @@
                     // service is async; tell controller/infinite scroll to back off until response comes through
                     this.busy = true;
 
-                    MessageService.getMessageList(mainCtrl.size, mainCtrl.page, $scope.recipientEmail)
+                    MessageService.getMessageList(that.size, that.page, $scope.recipientEmail)
                         .then(function (response) {
 
                             var messages = response.data.messages;
 
-                            mainCtrl.items = mainCtrl.items.concat(messages);
-                            mainCtrl.noMorePages = messages.length < 1;
-                            mainCtrl.busy = false;
-                            mainCtrl.page = mainCtrl.page + 1;
+                            that.items = that.items.concat(messages);
+                            that.noMorePages = messages.length < 1;
+                            that.busy = false;
+                            that.page = that.page + 1;
 
                         }, function () {
                             console.log('Service failed to query message list');
 
                             // keep busy set otherwise infinite scroll will go crazy making followup calls
-                            mainCtrl.busy = true;
+                            that.busy = true;
                         });
 
                 };
 
 
-                mainCtrl.rowClick = function (selectedMail) {
-
-                    MessageService.getMessageDetail(selectedMail.messageId)
-                        .then(function (response) {
-
-                            var modalInstance = $uibModal.open({
-                                templateUrl: 'modal.html',
-                                controller: 'ModalCtrl as modalCtrl',
-                                backdrop: "static",
-                                windowClass: 'mail-details-modal',
-                                modalFade: true
-
-                            });
-
-                            modalInstance.message = response.data;
-
-                        }, function () {
-                            console.log('Service failed to query message details');
-                        });
-
+                that.rowClick = function (selectedMail) {
+                    $location.url('/view/' + selectedMail.messageId);
                 };
 
-                mainCtrl.clearAndFetchMessages();
+
+                that.clearAndFetchMessages();
 
             }]);
 

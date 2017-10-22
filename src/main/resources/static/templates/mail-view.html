@@ -1,0 +1,64 @@
+<div id="single-mail-view" ng-controller="MessageViewController as messageViewCtrl">
+
+    <div growl></div>
+
+    <table class="table table-condensed table-striped table-bordered table-hover">
+        <thead>
+        <tr>
+            <th width="2%">ID</th>
+            <th width="8%">Received</th>
+            <th width="15%">From</th>
+            <th width="25%">Recipients</th>
+            <th width="50%">Subject</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr >
+            <td nowrap>{{messageViewCtrl.message.messageId}}</td>
+            <td nowrap>{{messageViewCtrl.message.receivedDate | date:'medium'}}</td>
+            <td nowrap>{{messageViewCtrl.message.senderEmail}}</td>
+            <td>{{messageViewCtrl.message.recipients}}</td>
+            <td>{{messageViewCtrl.message.subject}}</td>
+        </tr>
+
+        </tbody>
+
+    </table>
+
+    <!-- traditional approach
+    <div class="container mail-summary-meta">
+        <table class="table table-condensed">
+            <tr>
+                <th class="col-md-1">From:</th>
+                <td class="col-md-9">{{messageViewCtrl.message.senderEmail}}</td>
+                <td class="col-md-2">{{messageViewCtrl.message.receivedDate | date:'short'}}</td>
+            </tr>
+            <tr>
+                <th>To:</th>
+                <td colspan="2">{{messageViewCtrl.message.recipients}}</td>
+            </tr>
+        </table>
+    </div>
+    -->
+
+    <uib-tabset active="activeForm" class="mail-summary">
+
+        <uib-tab id="0" heading="Contents" ng-if="messageViewCtrl.message.messageHasBodyHTML">
+            <iframe class="mail-summary-content mail-summary-content-html"
+                    src="{{messageViewCtrl.messageHTMLURL}}"></iframe>
+        </uib-tab>
+
+        <uib-tab id="1" heading="Text Body" ng-if="messageViewCtrl.message.messageHasBodyText">
+            <iframe class="mail-summary-content mail-summary-content-pre"
+                    src="{{messageViewCtrl.messageTextURL}}"></iframe>
+        </uib-tab>
+
+        <uib-tab id="2" heading="Original Message" ng-if="true">
+            <iframe class="mail-summary-content mail-summary-content-pre"
+                    src="{{messageViewCtrl.messageRawURL}}"></iframe>
+        </uib-tab>
+
+    </uib-tabset>
+
+</div>

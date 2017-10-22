@@ -30,13 +30,13 @@
                 messageDetail: null,
                 getMessageList: getMessageList,
                 getMessageDetail: getMessageDetail,
-                getMessageHTMLURI: getMessageHTMLURI,
+                getMessageContentURI: getMessageContentURI,
                 forwardMessage: forwardMessage
             });
             return messageSvc;
 
-            function getMessageHTMLURI(messageId) {
-                return MESSAGES_ENDPOINT + '/' + messageId + '/html'
+            function getMessageContentURI(messageId, contentResource) {
+                return MESSAGES_ENDPOINT + '/' + messageId + '/' + contentResource
             }
 
             /**
