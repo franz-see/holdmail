@@ -1,64 +1,63 @@
-<div id="single-mail-view" ng-controller="MessageViewController as messageViewCtrl">
+<div id="single-mail-view " ng-controller="MessageViewController as messageViewCtrl">
 
-    <div growl></div>
 
-    <table class="table table-condensed table-striped table-bordered table-hover">
-        <thead>
-        <tr>
-            <th width="2%">ID</th>
-            <th width="8%">Received</th>
-            <th width="15%">From</th>
-            <th width="25%">Recipients</th>
-            <th width="50%">Subject</th>
-        </tr>
-        </thead>
-        <tbody>
+    <div id="toolBar" style="margin-top: 10px; margin-bottom: 10px;">
 
-        <tr >
-            <td nowrap>{{messageViewCtrl.message.messageId}}</td>
-            <td nowrap>{{messageViewCtrl.message.receivedDate | date:'medium'}}</td>
-            <td nowrap>{{messageViewCtrl.message.senderEmail}}</td>
-            <td>{{messageViewCtrl.message.recipients}}</td>
-            <td>{{messageViewCtrl.message.subject}}</td>
-        </tr>
+        <div class="panel panel-info">
 
-        </tbody>
+            <div class="panel-heading clearfix" style="padding: 4px 4px; TODO:barry-move-this-to-css;">
+                <button id="backButton" class="btn btn-default btn-sm pull-left"
+                        onclick="history.back()">
+                    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                </button>
+                <h4 class="pull-left" style="margin: 6px 0 0 10px; padding: 0; TODO:barry-move-this-to-css;">
+                    {{messageViewCtrl.message.subject}}</h4>
 
-    </table>
+                <div class="btn-group pull-right">
+                    <button id="fwdButton" class="btn btn-primary btn-sm">
+                        Forward <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
 
-    <!-- traditional approach
-    <div class="container mail-summary-meta">
-        <table class="table table-condensed">
-            <tr>
-                <th class="col-md-1">From:</th>
-                <td class="col-md-9">{{messageViewCtrl.message.senderEmail}}</td>
-                <td class="col-md-2">{{messageViewCtrl.message.receivedDate | date:'short'}}</td>
-            </tr>
-            <tr>
-                <th>To:</th>
-                <td colspan="2">{{messageViewCtrl.message.recipients}}</td>
-            </tr>
-        </table>
+            <table class="table table-condensed">
+                <tr>
+                    <th class="col-sm-1">From:</th>
+                    <td class="col-sm-9">{{messageViewCtrl.message.senderEmail}}</td>
+                    <td class="col-sm-2">{{messageViewCtrl.message.receivedDate | date:'short'}}</td>
+                </tr>
+                <tr>
+                    <th>To:</th>
+                    <td colspan="2">{{messageViewCtrl.message.recipients}}</td>
+                </tr>
+            </table>
+
+            <div class="panel-body" style="padding:5px 0 0 0; TODO:barry-move-this-to-css;">
+                <uib-tabset active="activeForm" class="mail-summary">
+
+                    <uib-tab id="0" heading="Contents" ng-if="messageViewCtrl.message.messageHasBodyHTML">
+                        <iframe class="mail-summary-content mail-summary-content-html"
+                                src="{{messageViewCtrl.messageHTMLURL}}"></iframe>
+                    </uib-tab>
+
+                    <uib-tab id="1" heading="Text Body" ng-if="messageViewCtrl.message.messageHasBodyText">
+                        <iframe class="mail-summary-content mail-summary-content-pre"
+                                src="{{messageViewCtrl.messageTextURL}}"></iframe>
+                    </uib-tab>
+
+                    <uib-tab id="2" heading="Original Message" ng-if="true">
+                        <iframe class="mail-summary-content mail-summary-content-pre"
+                                src="{{messageViewCtrl.messageRawURL}}"></iframe>
+                    </uib-tab>
+
+                </uib-tabset>
+            </div>
+
+
+        </div>
+
+
     </div>
-    -->
 
-    <uib-tabset active="activeForm" class="mail-summary">
-
-        <uib-tab id="0" heading="Contents" ng-if="messageViewCtrl.message.messageHasBodyHTML">
-            <iframe class="mail-summary-content mail-summary-content-html"
-                    src="{{messageViewCtrl.messageHTMLURL}}"></iframe>
-        </uib-tab>
-
-        <uib-tab id="1" heading="Text Body" ng-if="messageViewCtrl.message.messageHasBodyText">
-            <iframe class="mail-summary-content mail-summary-content-pre"
-                    src="{{messageViewCtrl.messageTextURL}}"></iframe>
-        </uib-tab>
-
-        <uib-tab id="2" heading="Original Message" ng-if="true">
-            <iframe class="mail-summary-content mail-summary-content-pre"
-                    src="{{messageViewCtrl.messageRawURL}}"></iframe>
-        </uib-tab>
-
-    </uib-tabset>
 
 </div>
