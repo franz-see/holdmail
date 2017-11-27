@@ -27,14 +27,19 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.spartasystems.holdmail.mime.MimeUtils.safeURLDecode;
+import static com.spartasystems.holdmail.mime.MimeUtils.trimQuotes;
+import static java.util.Arrays.stream;
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+
 /**
  * Represents a paramaterized mime header value, of the form:
  * <code>"value; p1key=p1val; p2key=p2val; ..."</code>
  */
 public class HeaderValue {
 
-    private static final String TRIM_SPEC        = "[\\s\"]*";
-    private static final String TRIM_PARAM_REGEX = "^" + TRIM_SPEC + "|" + TRIM_SPEC + "$";
 
     private final String value;
     private final Map<String, String> params = new HashMap<>();
@@ -43,23 +48,36 @@ public class HeaderValue {
 
         if (StringUtils.isBlank(valueString)) {
             value = valueString;
-        }
-        else {
+        } else {
 
             String[] parts = valueString.split(";");
-            value = parts[0];
-            for (int i = 1; i < parts.length; i++) {
-                String[] paramToken = parts[i].split("=");
 
-                String keyTrimmed = paramToken[0].replaceAll(TRIM_PARAM_REGEX, "");
-                String valTrimmed = paramToken.length < 2 ? "" : paramToken[1].replaceAll(TRIM_PARAM_REGEX, "");
+            // the value is everything up to the first ';'
+            value = trimQuotes(parts[0]);
 
-                params.put(keyTrimmed, valTrimmed);
+            // all following parts are key=value parts
+            stream(parts, 1, parts.length)
+                    .map(ValueParam::parse)
+                    .collect(groupingBy(ValueParam::getName))
+                    .forEach((name, params) -> {
 
-            }
+                        String concatenated = params.stream()
+                                .sorted(comparingInt(ValueParam::getPosition))
+                                .map(ValueParam::getValue).collect(joining(""));
+
+                        String decoded = params.stream()
+                                .sorted(comparingInt(ValueParam::getPosition))
+                                .findFirst().map(ValueParam::getCharset)
+                                .map(encoding -> safeURLDecode(concatenated, encoding))
+                                .orElse(concatenated);
+
+                        this.params.put(name, decoded);
+                    });
+
         }
 
     }
+
 
     public boolean hasValue(String value) {
         return value != null && StringUtils.equals(this.value, value);
