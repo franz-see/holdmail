@@ -85,6 +85,7 @@ springBoot {
 
 rat {
     excludes = [
+            'out/**',
             'client/node_modules/**',
             'client/dist/**',
             'client/.babelrc',
